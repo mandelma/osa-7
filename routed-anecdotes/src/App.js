@@ -20,14 +20,15 @@ const Menu = (props) => {
             <Link style={padding} to='/create new'>create new</Link>
             <Link style={padding} to='/about'>about</Link>
           </div>
-          
+          <p style = {props.msgStyle}>{props.message}</p>
           <Route exact path='/' render={() => <AnecdoteList anecdotes = {props.anecdotes} />} />
-          <Route exact path='/create new' render={() => <CreateNew addNew = {props.addNew}/>} />
+          <Route exact path='/create new' render={() => <CreateNew addNew = {props.addNew}/> } />
+
           <Route exact path='/about' render={() => <About />} />
       
-         {  <Route exact path='/anecdotes/:id' render={({ match }) =>
+          <Route exact path='/anecdotes/:id' render={({ match }) =>
             <Anecdote anecdote = {props.anecdoteById(match.params.id)} />
-          }/>}
+          }/>
         </div>
       </Router>
     </div>
@@ -41,8 +42,10 @@ const AnecdoteList = ({ anecdotes }) => (
       {anecdotes.map(anecdote => 
       <li key={anecdote.id} >
         <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+        
       </li>)}
     </ul>
+    
   </div>
 )
 
@@ -83,39 +86,49 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
+  const [mainSivu, setMainSivu] = useState(false)
 
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: e.target.content.value,
+      author: e.target.author.value,
+      info: e.target.info.value,
       votes: 0
     })
+    e.target.content.value = ''
+    e.target.author.value = ''
+    e.target.info.value = ''
+    setMainSivu(true)
   }
-
-  return (
-    <div>
-      <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
-        </div>
-        <div>
-          author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
-        </div>
-        <div>
-          url for more info
-          <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
-        </div>
-        <button>create</button>
-      </form>
-    </div>
-  )
-
+  if(mainSivu){
+    return(
+      <Redirect to = '/' />
+    )
+  }
+  else{
+    return (
+      <div>
+        <h2>create a new anecdote</h2>
+        <form onSubmit={handleSubmit}>
+          <div>
+            content
+            <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          </div>
+          <div>
+            author
+            <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          </div>
+          <div>
+            url for more info
+            <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
+          </div>
+          <button>create</button>
+        </form>
+      </div>
+    )
+  }
 }
 
 const App = () => {
@@ -141,6 +154,15 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(`a new anecdote '${anecdote.content}' created!`)
+    setTimeout(() => {
+      setNotification('')
+    }, 10000)
+  }
+
+  const messageStyle =  {
+    color: 'green'
+
   }
 
   const anecdoteById = (id) =>
@@ -163,6 +185,9 @@ const App = () => {
       <Menu 
         anecdotes = {anecdotes}
         anecdoteById = {anecdoteById}
+        addNew = {addNew}
+        message = {notification}
+        msgStyle = {messageStyle}
       />
       <Footer />
     </div>
