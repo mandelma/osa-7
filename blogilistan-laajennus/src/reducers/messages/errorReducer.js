@@ -3,22 +3,24 @@ const errorReducer = (state = null, action) => {
   case 'ERR_MESSAGE':
     return action.data
   case 'CLEAR_MESSAGE':
-    return null
+    return action.data
   default:
     return state
   }
 }
 
-export const errMessage = (msg) => {
-  return {
-    type: 'ERR_MESSAGE',
-    data: msg
-  }
-}
-
-export const clearError = () => {
-  return {
-    type: 'CLEAR_MESSAGE'
+export const errorMessage = (msg, time) => {
+  return async dispatch => {
+    dispatch({
+      type: 'ERR_MESSAGE',
+      data: msg
+    })
+    setTimeout(() => {
+      dispatch({
+        type: 'CLEAR_MESSAGE',
+        data: null
+      })
+    }, time * 1000)
   }
 }
 

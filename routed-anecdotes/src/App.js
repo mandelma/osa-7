@@ -6,7 +6,7 @@ import {
 
 const Menu = (props) => {
   const padding = {
-    paddingRight: 5,
+    paddingRight: 5, 
     border: 'solid black',
     padding: 5,
     borderWidth: 1
