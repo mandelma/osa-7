@@ -8,7 +8,6 @@ const testBlog = {
   likes: 13
 }
 
-
 test('Show blog title', () => {
   const component = render(
     <SimpleBlog blog = {testBlog} />

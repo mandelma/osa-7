@@ -2,14 +2,12 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import blogService from './services/blogs'
 import './index.css'
-import Login from './components/loginForm'
-import Blogi from './components/blogiForm'
-import Blog from './components/Blog'
+import Menu from './components/Menu'
 import Notification from './components/Notification'
-import Togglable from './components/Togglable'
 import { notificationMessage } from './reducers/messages/notificationReducer'
 import { errorMessage } from './reducers/messages/errorReducer'
-import { initializeBlogs, like } from './reducers/blogReducer'
+import { initializeBlogs, like, addNewBlog, removeBlog } from './reducers/blogReducer'
+import { initializeUsers } from './reducers/userReducer'
 import { logInUser, logOutUser, setUser } from './reducers/loginReducer'
 import { useField } from './hooks'
 
@@ -29,6 +27,11 @@ const App = (props) => {
   }, [])
 
   useEffect(() => {
+    props.initializeUsers()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if(loggedUserJSON){
       const user = JSON.parse(loggedUserJSON)
@@ -40,24 +43,10 @@ const App = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const readBlogs = () => props.blogs.map(blog =>
-    <Blog
-      key = {blog.title}
-      blog = {blog}
-      userName = {props.user.username}
-      blogiUserName = {blog.user.username}
-      addLike = {() => addLike(blog)}
-
-      removeBlog = {() => removeHandler(blog)}
-    />
-  )
-
   const removeHandler = (item) => {
     try{
       if(window.confirm(`remove blog ${item.title} by ${item.author}`)){
-        blogService.remove(item.id)
-        props.blogs.filter(blog => blog.id !== item.id)
-
+        props.removeBlog(item)
         props.notificationMessage(`Blog '${item.title}' is removed`, 5)
       }
     }catch(exception){
@@ -70,15 +59,16 @@ const App = (props) => {
     try{
       await props.logInUser(username.value, salasana.value)
       props.notificationMessage('You are logged in succesfully', 5)
+      username.cleanField()
+      salasana.cleanField()
     }catch(exception){
       username.cleanField()
       salasana.cleanField()
-
       props.errorMessage('Wrong username or password!', 5)
     }
   }
 
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault()
     blogFormRef.current.toggleVisibility()
     const blogObject = {
@@ -88,17 +78,14 @@ const App = (props) => {
       likes: likes.value
     }
 
-    blogService
-      .create(blogObject)
-      .then(response => {
-        props.blogs.concat(response)
-        title.cleanField()
-        author.cleanField()
-        url.cleanField()
-        likes.cleanField()
+    props.addNewBlog(blogObject)
 
-        props.notificationMessage(`New Blog '${blogObject.title}' is added`, 5)
-      })
+    title.cleanField()
+    author.cleanField()
+    url.cleanField()
+    likes.cleanField()
+
+    props.notificationMessage(`New Blog '${blogObject.title}' is added`, 5)
   }
 
   const logOut = () => {
@@ -113,37 +100,27 @@ const App = (props) => {
   }
 
   return (
-    <div>
-      <Notification
-
-      />
-      {
-        props.user === null
-          ?
-          <Login
-            handleLogin = {handleLogin}
-            username = {username}
-            password = {salasana}
-          />
-          :
-          <div>
-            <h1>Blogs</h1>
-            <p>
-              {props.user.name} logged in&nbsp;&nbsp;
-              <button onClick = {logOut}>Log out</button>
-            </p>
-            <Togglable buttonLabel = 'New blog' ref = {blogFormRef}>
-              <Blogi
-                handleBlogi = {addBlog}
-                title = {title}
-                author = {author}
-                url = {url}
-                likes = {likes}
-              />
-            </Togglable>
-            {readBlogs()}
-          </div>
-      }
+    <div className = 'container'>
+      <Notification />
+      <div>
+        <Menu
+          users = {props.users}
+          blogs = {props.blogs}
+          user = {props.user}
+          logOut = {logOut}
+          addBlog = {addBlog}
+          title = {title}
+          author = {author}
+          url = {url}
+          likes = {likes}
+          blogFormRef = {blogFormRef}
+          addLike = {addLike}
+          removeBlog = {removeHandler}
+          handleLogin = {handleLogin}
+          username = {username}
+          salasana = {salasana}
+        />
+      </div>
     </div>
   )
 }
@@ -153,7 +130,8 @@ const mapStateToProps = (state) => {
     blogs: state.blogs,
     message: state.message,
     errMessage: state.errMessage,
-    user: state.user
+    user: state.user,
+    users: state.users
   }
 }
 
@@ -162,7 +140,10 @@ const mapDispatchToProps = {
   logOutUser,
   setUser,
   initializeBlogs,
+  initializeUsers,
   like,
+  addNewBlog,
+  removeBlog,
   notificationMessage,
   errorMessage
 }
