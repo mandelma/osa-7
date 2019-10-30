@@ -13,7 +13,7 @@ const Blog = ({ blogs , addBlog, title, author, url, likes, blogFormRef }) => {
     marginBottom: 5
   }
 
-  //const showOrNot = { display: userName === blogiUserName ? '' : 'none' }
+  //const showOrNot = { display: userName === blogiUserName ? '' : 'none')
 
   return(
     <div className = 'blogi'>

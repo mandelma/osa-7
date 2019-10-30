@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import blogService from './services/blogs'
 import './index.css'
@@ -6,7 +6,7 @@ import Menu from './components/Menu'
 import Notification from './components/Notification'
 import { notificationMessage } from './reducers/messages/notificationReducer'
 import { errorMessage } from './reducers/messages/errorReducer'
-import { initializeBlogs, like, addNewBlog, removeBlog } from './reducers/blogReducer'
+import { initializeBlogs, like, addNewBlog, removeBlog, addComment } from './reducers/blogReducer'
 import { initializeUsers } from './reducers/userReducer'
 import { logInUser, logOutUser, setUser } from './reducers/loginReducer'
 import { useField } from './hooks'
@@ -18,6 +18,8 @@ const App = (props) => {
   const author = useField('text')
   const url = useField('text')
   const likes = useField('text')
+
+  const comment = useField('text')
 
   const blogFormRef = React.createRef()
 
@@ -96,7 +98,7 @@ const App = (props) => {
 
   const addLike = (likeBlog) => {
     props.like(props.blogs, likeBlog)
-    props.notificationMessage('You added like to the blog!', 5)
+    props.notificationMessage(`You added like to the blog! '${likeBlog.title}'`, 5)
   }
 
   return (
@@ -112,13 +114,14 @@ const App = (props) => {
           title = {title}
           author = {author}
           url = {url}
-          likes = {likes}
           blogFormRef = {blogFormRef}
           addLike = {addLike}
           removeBlog = {removeHandler}
           handleLogin = {handleLogin}
           username = {username}
           salasana = {salasana}
+          comment = {comment}
+          addComment = {props.addComment}
         />
       </div>
     </div>
@@ -145,7 +148,8 @@ const mapDispatchToProps = {
   addNewBlog,
   removeBlog,
   notificationMessage,
-  errorMessage
+  errorMessage,
+  addComment
 }
 
 export default connect(

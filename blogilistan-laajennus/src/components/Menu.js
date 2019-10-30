@@ -11,7 +11,8 @@ import { Navbar } from 'react-bootstrap'
 import { Nav } from 'react-bootstrap'
 
 const Menu = ({ user, blogs, users, logOut, addLike, removeBlog, addBlog,
-  title, author, url, likes, handleLogin, username, salasana, blogFormRef }) => {
+  title, author, url, likes, handleLogin, username, salasana, blogFormRef,
+  comment, addComment }) => {
   const menuStyle = { padding: 10 }
 
   return (
@@ -68,6 +69,8 @@ const Menu = ({ user, blogs, users, logOut, addLike, removeBlog, addBlog,
               blogs = {blogs}
               addLike = {addLike}
               removeBlog = {removeBlog}
+              comment = {comment}
+              addComment = {addComment}
             />
           } />
           <Route exact path = '/login' render = {() =>
