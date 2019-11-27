@@ -4,7 +4,7 @@ import Togglable from '../Togglable'
 import Blogi from '../blogiForm'
 import { Link } from 'react-router-dom'
 
-const Blog = ({ blogs , addBlog, title, author, url, likes, blogFormRef }) => {
+const Blog = ({ blogs , addBlog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -13,6 +13,8 @@ const Blog = ({ blogs , addBlog, title, author, url, likes, blogFormRef }) => {
     marginBottom: 5
   }
 
+  const blogFormRef = React.createRef()
+
   //const showOrNot = { display: userName === blogiUserName ? '' : 'none')
 
   return(
@@ -20,10 +22,7 @@ const Blog = ({ blogs , addBlog, title, author, url, likes, blogFormRef }) => {
       <Togglable buttonLabel = 'New blog' ref = {blogFormRef}>
         <Blogi
           handleBlogi = {addBlog}
-          title = {title}
-          author = {author}
-          url = {url}
-          likes = {likes}
+          blogFormRef = {blogFormRef}
         />
       </Togglable><br/>
       <div>
@@ -38,13 +37,15 @@ const Blog = ({ blogs , addBlog, title, author, url, likes, blogFormRef }) => {
   )
 }
 
-Blog.propTypes = {
+/* Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   addLike: PropTypes.func,
   removeBlog: PropTypes.func,
   userName: PropTypes.string,
   blogiUserName: PropTypes.string
-}
+} */
+
+
 
 
 export default Blog

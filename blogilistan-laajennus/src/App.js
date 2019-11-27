@@ -14,15 +14,7 @@ import { useField } from './hooks'
 const App = (props) => {
   const username = useField('text')
   const salasana = useField('password')
-  const title = useField('text')
-  const author = useField('text')
-  const url = useField('text')
-  const likes = useField('text')
-
-  const comment = useField('text')
-
-  const blogFormRef = React.createRef()
-
+  
   useEffect(() => {
     props.initializeBlogs()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -61,35 +53,25 @@ const App = (props) => {
     try{
       await props.logInUser(username.value, salasana.value)
       props.notificationMessage('You are logged in succesfully', 5)
-      username.cleanField()
-      salasana.cleanField()
+      username.reset()
+      salasana.reset()
     }catch(exception){
-      username.cleanField()
-      salasana.cleanField()
+      username.reset()
+      salasana.reset()
       props.errorMessage('Wrong username or password!', 5)
     }
   }
+  
+  const addBlog = async (blog) => {
+    await props.addNewBlog(blog)
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-    blogFormRef.current.toggleVisibility()
-    const blogObject = {
-      title: title.value,
-      author: author.value,
-      url: url.value,
-      likes: likes.value
-    }
+    title.reset()
+    author.reset()
+    url.reset()
 
-    props.addNewBlog(blogObject)
-
-    title.cleanField()
-    author.cleanField()
-    url.cleanField()
-    likes.cleanField()
-
-    props.notificationMessage(`New Blog '${blogObject.title}' is added`, 5)
+    props.notificationMessage(`New Blog '${blog.title}' is added`, 5)
   }
-
+ 
   const logOut = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     blogService.removeToken()
@@ -111,16 +93,11 @@ const App = (props) => {
           user = {props.user}
           logOut = {logOut}
           addBlog = {addBlog}
-          title = {title}
-          author = {author}
-          url = {url}
-          blogFormRef = {blogFormRef}
           addLike = {addLike}
           removeBlog = {removeHandler}
           handleLogin = {handleLogin}
           username = {username}
           salasana = {salasana}
-          comment = {comment}
           addComment = {props.addComment}
         />
       </div>

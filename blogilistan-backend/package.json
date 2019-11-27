@@ -8,9 +8,9 @@
     "look": "cross-env NODE_ENV=development nodemon index.js",
     "lint": "eslint .",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
-    "build:ui": "rmdir /q /s build && cd C:/Users/majaa/omnia/osa-7/blogilistan-laajennus/ && npm run build --prod && xcopy build ..\\..\\osa-4\\build\\ /E /H /C /R /Q /Y"
+    "start:test": "cross-env NODE_ENV=test node index.js",
+    "build:ui": "rmdir /q /s build && cd C:/Users/majaa/blogi/osa-7/blogilistan-laajennus/ && npm run build --prod && xcopy build ..\\blogilistan-backend\\build\\ /E /H /C /R /Q /Y"
   },
-  "proxy": "http://localhost:3003",
   "author": "Marko",
   "license": "ISC",
   "dependencies": {
@@ -34,4 +34,5 @@
   "jest": {
     "testEnvironment": "node"
   }
+  
 }

@@ -1,22 +1,27 @@
 import React from 'react'
 import Comments from './BlogComment'
+import { useField } from '../../hooks'
 import {
   Redirect
 } from 'react-router-dom'
 
-
-const Blogs = ({ blogs, removeBlog, id, user, addLike, comment, addComment }) => {
-
-  const addcomment = async () => {
+const Blogs = ({ blogs, removeBlog, id, user, addLike, addComment }) => {
+  const comment = useField('text')
+  const addcomment = async (blogComment) => {
     try {
-      await addComment({
-        id: id,
-        comment: comment.value
-      })
-      comment.cleanField()
+      await addComment(blogComment)
+      comment.reset()
     }catch(exception){
       console.log(exception)
     }
+  }
+
+  const submit = (event) => {
+    event.preventDefault()
+    addcomment({
+      id: id,
+      comment: comment.value
+    })
   }
 
   const removeButton = (blog) => {
@@ -37,7 +42,7 @@ const Blogs = ({ blogs, removeBlog, id, user, addLike, comment, addComment }) =>
       <div style = {{ border: 'solid', padding: 10, backgroundColor: 'yellow' }}>
         {blogs.map(blog => blog.id === id ?
           <div key = {blog.id}>
-            <h3 style = {{ color: 'green' }}><bold>{blog.title}</bold></h3><br/>
+            <h3 style = {{ color: 'green' }}>{blog.title}</h3><br/>
             <p><a href = {blog.url}>{blog.url}</a></p><br/>
             <div>
               {blog.likes} likes&nbsp;&nbsp;
@@ -50,9 +55,12 @@ const Blogs = ({ blogs, removeBlog, id, user, addLike, comment, addComment }) =>
         )}
       </div>
 
-      <p>Comments</p>
-      <input {...comment} />
-      <button onClick = {() => addcomment()}>add comment</button>
+      <p>Comments here:</p>
+      <form onSubmit = {submit}>
+        <input id = '_comment' {...comment} />
+        <button >add comment</button>
+      </form>
+      
       <Comments
         blogs = {blogs}
         id = {id}

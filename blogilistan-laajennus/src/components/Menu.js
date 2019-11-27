@@ -11,8 +11,7 @@ import { Navbar } from 'react-bootstrap'
 import { Nav } from 'react-bootstrap'
 
 const Menu = ({ user, blogs, users, logOut, addLike, removeBlog, addBlog,
-  title, author, url, likes, handleLogin, username, salasana, blogFormRef,
-  comment, addComment }) => {
+  handleLogin, username, salasana, addComment }) => {
   const menuStyle = { padding: 10 }
 
   return (
@@ -46,11 +45,6 @@ const Menu = ({ user, blogs, users, logOut, addLike, removeBlog, addBlog,
             addLike = {addLike}
             blogs = {blogs}
             addBlog = {addBlog}
-            title = {title}
-            author = {author}
-            url = {url}
-            likes = {likes}
-            blogFormRef = {blogFormRef}
           />
           } />
 
@@ -69,7 +63,6 @@ const Menu = ({ user, blogs, users, logOut, addLike, removeBlog, addBlog,
               blogs = {blogs}
               addLike = {addLike}
               removeBlog = {removeBlog}
-              comment = {comment}
               addComment = {addComment}
             />
           } />
